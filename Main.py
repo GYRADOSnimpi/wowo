@@ -1,7 +1,7 @@
-import os
-import random
-import turtle
-#Sätter upp Turtle skärmen
+import os#Använda opertaions systemet, en mellan person till underliggande operations system, genom detta kan man ta reda på viktig information
+import random#Hjälper med att skapa slumpmässiga variabler
+import turtle#För att skapa turtle objekt
+#Sätter upp turtle skärmen
 turtle.fd(0)#Sätter framåt riktningen till 0, fd är en metod som flyttar variabeln framåt med en angiven distans.
 turtle.speed(0)#Sätter variabelns hastighet till 0. Detta betyder att variabeln rör sig direkt utan någon animeringsfördröjnin.
 turtle.bgcolor("black")#Sätter Bakgrund färgen till svart, "black" säger att det ska vara svart.
@@ -9,7 +9,7 @@ turtle.setundobuffer(1)#Sätter storleken på ångra bufferten sparar en histori
 turtle.tracer(1)#Aktiverar variablens animation, kontrollerar animations hastigheten.
 #Definierar en klass för att skapa en karaktär(sprite)
 class Sprite(turtle.Turtle):#Definerar en klass som heter sprite
-    def __init__(self, sprite, color, startx, starty):
+    def __init__(self, sprite, color, startx, starty):#Self, insatsen av klassen Sprite, klassen har med sprites att göra Color, färg associerad med spriten Startx, 
         super().__init__(shape=sprite)  # Pass the shape directly
         self.speed(0)
         self.penup()

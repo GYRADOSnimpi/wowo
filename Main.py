@@ -2,13 +2,13 @@ import os
 import random
 import turtle
 #Sätter upp Turtle skärmen
-turtle.fd(0)
-turtle.speed(0)
-turtle.bgcolor("black")
-turtle.setundobuffer(1)
-turtle.tracer(1)
+turtle.fd(0)#Sätter framåt riktningen till 0, fd är en metod som flyttar variabeln framåt med en angiven distans.
+turtle.speed(0)#Sätter variabelns hastighet till 0. Detta betyder att variabeln rör sig direkt utan någon animeringsfördröjnin.
+turtle.bgcolor("black")#Sätter Bakgrund färgen till svart, "black" säger att det ska vara svart.
+turtle.setundobuffer(1)#Sätter storleken på ångra bufferten sparar en historik av det variabeln gör. Ettan gör så att man kan göra om ett tidigare riktkommandon.
+turtle.tracer(1)#Aktiverar variablens animation, kontrollerar animations hastigheten.
 #Definierar en klass för att skapa en karaktär(sprite)
-class Sprite(turtle.Turtle):
+class Sprite(turtle.Turtle):#Definerar en klass som heter sprite
     def __init__(self, sprite, color, startx, starty):
         super().__init__(shape=sprite)  # Pass the shape directly
         self.speed(0)

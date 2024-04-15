@@ -1,144 +1,121 @@
-import os#Använda opertaions systemet, en mellan person till underliggande operations system, genom detta kan man ta reda på viktig information
-import random#Hjälper med att skapa slumpmässiga variabler
-import turtle#För att skapa turtle objekt
-#Sätter upp turtle skärmen
-turtle.fd(0)#Sätter framåt riktningen till 0, fd är en metod som flyttar variabeln framåt med en angiven distans.
-turtle.speed(0)#Sätter variabelns hastighet till 0. Detta betyder att variabeln rör sig direkt utan någon animeringsfördröjnin.
-turtle.bgcolor("black")#Sätter Bakgrund färgen till svart, "black" säger att det ska vara svart.
-turtle.setundobuffer(1)#Sätter storleken på ångra bufferten sparar en historik av det variabeln gör. Ettan gör så att man kan göra om ett tidigare riktkommandon.
-turtle.tracer(1)#Aktiverar variablens animation, kontrollerar animations hastigheten.
-#Definierar en klass för att skapa en karaktär(sprite)
-class Sprite(turtle.Turtle):#Definerar en klass som heter sprite
-    def __init__(self, sprite, color, startx, starty):#Self, insatsen av klassen Sprite, klassen har med sprites att göra Color, färg associerad med spriten Startx, 
-        super().__init__(shape=sprite)  # Pass the shape directly
+import turtle  # gör detta möjligt, detta är hur det är möjligt att göra missle, enemy, ally och player. Denna modul använder tkinter för underläggande grafiker
+import random # gör det möjligt att generera modul, modulen innehåller en slumpmässig nummer generator
+import math # gör det möjligt att utföra matematiska formler i python
+import pygame
+pygame.mixer.init()
+pygame.mixer.music.load("")
+pygame.mixer.music.play(-1,0.0)
+# sätter upp skärmen
+screen = turtle.Screen() # klass som innehåller modulen turtle, screen = raden tilldelar ett resultat
+screen.setup(width=600, height=600) # sätter upp skärmen
+screen.bgcolor("black") # bestämmer bakgrundsfärgen
+screen.title("VisionHub games") # Skriver in vad det ska heta(på skärmen)
+
+border_pen = turtle.Turtle() # rita tilldelar till variabeln
+border_pen.speed(4) # ritningen kan ha en hastighet när den ritar jag vill inte att det ska synas att det ritar utan att den alltid är där , därför är den satt på snabbaste hastigheten för att alltid synas på skärmen
+border_pen.color("yellow")
+border_pen.penup()
+border_pen.setposition(-300, -300)
+border_pen.pendown()
+border_pen.pensize(3)
+for side in range(4):
+    border_pen.fd(600)
+    border_pen.lt(90)
+border_pen.hideturtle()
+
+
+class Sprite(turtle.Turtle):
+    def __init__(self, sprite, color, startx, starty):
+        super().__init__(shape=sprite)
         self.speed(0)
         self.penup()
         self.color(color)
         self.goto(startx, starty)
         self.speed = 1
-#Gör så att karaktärerna har möjligheten att röra på sig
+
     def move(self):
         self.fd(self.speed)
-#Hanterar gränserna och när en karaktär nuddar gränserna så byter de riktning
-        if self.xcor() > 290:
-            self.setx(290)
+        if self.xcor() > 290 or self.xcor() < -290 or self.ycor() > 290 or self.ycor() < -290:
             self.rt(60)
-        if self.xcor() > -290:
-            self.setx(-290)
-            self.rt(60)
-        if self.ycor() > 290:
-            self.sety(290)
-            self.rt(60)
-        if self.ycor() > -290:
-            self.sety(-290)
-            self.rt(60)
-#Hanterar kollitionerna mellan de olika karaktärerna
-def is_collision(self, other):
-    if (self.xcor() >= (other.xcor() - 20)) and \
-            (self.xcor() <= (other.xcor() + 20)) and \
-            (self.ycor() >= (other.ycor() - 20)) and \
-            (self.ycor() <= (other.ycor() + 20)):
-        return True
-    else:
-        return False
 
 
 
-
-
-#En klass för spelar karaktären
 class Player(Sprite):
-    def __init__(self, spriteshape, color, startx, starty):
-        Sprite.__init__(self, spriteshape, color, startx, starty)
-        self.speed = 4
-        self.lives = 3
-#Hanterar spelarens åtgärder
-    def turn_left(self):
+    def __init__(self, spriteshape, color, startx, starty, speed):
+        super().__init__(spriteshape, color, startx, starty)
+        self.speed = speed
+
+    def move_left(self):
         self.lt(45)
 
-
-    def turn_left(self):
+    def move_right(self):
         self.rt(45)
-
 
     def accelerate(self):
         self.speed += 1
 
     def decelerate(self):
         self.speed -= 1
-#Definerar en klass för andra typer av karaktärer
+
+
+
 class Enemy(Sprite):
-    def __init__(self, spriteshape, color, startx, starty):
-        Sprite.__init__(self, spriteshape, color, startx, starty)
-        self.speed = 6
-        self.setheading(random.randint(0,360))
-
-class Ally(Sprite):
-    def __init__(self, spriteshape, color, startx, starty):
-        Sprite.__init__(self, spriteshape, color, startx, starty)
-        self.speed = 8
-        self.setheading(random.randint(0,360))
-
-    def move(self):
-        self.fd(self.speed)
-#Hanterar gränser
-        if self.xcor() > 290:
-            self.setx(290)
-            self.lt(60)
-        if self.xcor() > -290:
-            self.setx(-290)
-            self.lt(60)
-        if self.ycor() > 290:
-            self.sety(290)
-            self.lt(60)
-        if self.ycor() > -290:
-            self.sety(-290)
-            self.lt(60)
+    def __init__(self, spriteshape, color, startx, starty, speed):
+        super().__init__(spriteshape, color, startx, starty)
+        self.speed = speed
 
 
 class Missile(Sprite):
-    def __init__(self, spriteshape, color, startx, starty):
-        Sprite.__init__(self, spriteshape, color, startx, starty)
-        self.shapesize(stretch_wid=0.3, stretch_len=0.4, outline=None)
-        self.speed = 20
+    def __init__(self, spriteshape, color, startx, starty, speed):
+        super().__init__(spriteshape, color, startx, starty)
+        self.shapesize(stretch_wid=0.5, stretch_len=0.5, outline=None)
+        self.speed = speed
         self.status = "ready"
         self.goto(-1000, 1000)
+
     def fire(self):
         if self.status == "ready":
-           self.goto(player.xcor(), player.ycor())
-           self.setheading(player.heading())
-           self.status = "firing"
+            self.goto(player.xcor(), player.ycor())
+            self.setheading(player.heading())
+            self.status = "firing"
+
     def move(self):
-
-        if self.status == "ready":
-            self.goto(-1000, 1000)
-
         if self.status == "firing":
             self.fd(self.speed)
-
-            if self.xcor() < -290 or self.x.cor() > 290 or \
-                    self.ycor()< -290 or self.ycor()> 290:
-                    self.goto(-1000,1000)
-                    self.status = "ready"
-
+            if self.xcor() < -290 or self.xcor() > 290 or \
+                    self.ycor() < -290 or self.ycor() > 290:
+                self.goto(-1000, 1000)
+                self.status = "ready"
 
 
-
+class Ally(Sprite):
+    def __init__(self, spriteshape, color, startx, starty, speed):
+        super().__init__(spriteshape, color, startx, starty)
+        self.speed = speed
 
 
 class Game():
     def __init__(self):
-        self.level = 1
         self.score = 0
-        self.state = "playing"
-        self.pen = turtle.Turtle()
         self.lives = 3
+        self.lives_display = turtle.Turtle()
+        self.lives_display.speed(0)
+        self.lives_display.color("white")
+        self.lives_display.penup()
+        self.lives_display.hideturtle()
+        self.update_lives_display()
+
+    def update_lives_display(self):
+        self.lives_display.clear()
+        self.lives_display.goto(-280, 260)
+        self.lives_display.write("Lives: {}".format(self.lives), align="left", font=("Courier", 16, "normal"))
+
     def draw_border(self):
+        self.pen = turtle.Turtle()
         self.pen.speed(0)
         self.pen.color("white")
-        self.pen.size(3)
         self.pen.penup()
-        self.goto(-300, 300)
+        self.pen.goto(-300, 300)
         self.pen.pendown()
         for side in range(4):
             self.pen.fd(600)
@@ -147,57 +124,112 @@ class Game():
         self.pen.ht()
 
 
-game =  Game()
+
+def is_collision(sprite1, sprite2):
+    distance = math.sqrt((sprite1.xcor() - sprite2.xcor()) ** 2 + (sprite1.ycor() - sprite2.ycor()) ** 2)
+    if distance < 20:
+        return True
+    else:
+        return False
+
+
+
+def create_allies():
+    num_allies = 3
+    for _ in range(num_allies):
+        ally = Ally("square", "blue", random.randint(-280, 280), random.randint(-280, 280), ally_speed)
+        allies.append(ally)
+
+
+def choose_mode():
+    mode = screen.textinput("Choose game mode", "Enter 'slow', 'medium', or 'fast': ").lower()
+    if mode == "slow":
+        return 10, 2, 15, 5
+    elif mode == "medium":
+        return 15, 3, 20, 7
+    elif mode == "fast":
+        return 20, 4, 25, 10
+    else:
+        print("Invalid mode! Setting to medium.")
+        return 15, 3, 20, 7
+
+
+player_speed, enemy_speed, missile_speed, ally_speed = choose_mode()
+
+
+player = Player("triangle", "white", 0, -250, player_speed)
+
+
+num_enemies = 5
+enemies = []
+for _ in range(num_enemies):
+    enemy = Enemy("circle", "red", random.randint(-280, 280), random.randint(100, 280), enemy_speed)
+    enemies.append(enemy)
+
+
+missile = Missile("triangle", "orange", 0, 0, missile_speed)
+
+
+allies = []
+create_allies()
+
+
+game = Game()
 game.draw_border()
 
 
-
-
-
-
-
-
-
-player = Player("triangle", "white", 0, 0)
-enemy = Enemy("circle", "red", -100, 0)
-misille = Missile("triangle", "yellow", 0,0)
-ally = Ally("square", "blue", 0, 0)
-
-turtle.onkey(player.turn_left, "Left")
-turtle.onkey(player.turn_left, "Right")
+turtle.listen()
+turtle.onkey(player.move_left, "Left")
+turtle.onkey(player.move_right, "Right")
 turtle.onkey(player.accelerate, "Up")
 turtle.onkey(player.decelerate, "Down")
-turtle.onkey(misille.fire, "space")
-turtle.listen()
+turtle.onkey(missile.fire, "space")
 
 
-while True:
+while game.lives > 0:
     player.move()
-    enemy.move()
-    misille.move()
-    ally.move()
-
-    if player.is_collition(enemy):
-        x = random.randint(-250, 250)
-        y = random.randint(-250, 250)
-        enemy.goto(x, y)
-
-    if misille.is_collition(enemy):
-        x = random.randint(-250, 250)
-        y = random.randint(-250, 250)
-        enemy.goto(x, y)
-        misille.status = "ready"
+    missile.move()
 
 
+    for enemy in enemies:
+        enemy.move()
 
 
-    if misille.is_collition(ally):
-        x = random.randint(-250, 250)
-        y = random.randint(-250, 250)
-        ally.goto(x, y)
-        misille.status = "ready"
+        if is_collision(player, enemy):
+            game.lives -= 1
+            game.update_lives_display()
+            print("Lost a life! Lives left:", game.lives)
+            enemy.goto(random.randint(-280, 280), random.randint(100, 280))
 
 
+    for ally in allies:
+        ally.move()
 
 
-delay = input("Press enter to finish. >")
+        if is_collision(player, ally):
+            game.lives += 1
+            game.update_lives_display()
+            print("Gained a life! Lives:", game.lives)
+            ally.goto(random.randint(-280, 280),
+
+                      random.randint(-280, 280))
+
+
+    for enemy in enemies:
+        if is_collision(missile, enemy):
+            game.score += 10
+            print("Score:", game.score)
+            missile.goto(-1000, 1000)
+            missile.status = "ready"
+            enemy.goto(random.randint(-280, 280), random.randint(100, 280))
+
+    for ally in allies:
+        if is_collision(missile, ally):
+            game.lives += 1
+            game.update_lives_display()
+            print("Gained a life! Lives:", game.lives)
+            ally.goto(random.randint(-280, 280), random.randint(-280, 280))
+
+print("Game Over")
+
+turtle.done()
